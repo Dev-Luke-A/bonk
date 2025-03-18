@@ -1,4 +1,4 @@
-Privacy Policy for Bonk Game
+Privacy Policy for Bonk 
 
 Effective Date: 18/03/2025
 
