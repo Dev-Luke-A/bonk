@@ -106,33 +106,32 @@
     <p class="tagline">Best way to annoy your friends.</p>
   </header>  <div class="bonk-action">
     <button class="bonk-button" onclick="bonk()">Bonk!</button>
-  </div>  <div class="friends-row" id="friendsRow">
-    <!-- Multiple friend cards -->
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=1" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=2" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=3" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=4" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=5" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=6" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=7" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=8" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=9" alt="Friend" /></div>
-    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=10" alt="Friend" /></div>
-  </div>  <div class="links">
-    <a href="#">GitHub Repo</a>
+  </div>  <div class="friends-row" id="friendsRow"></div>  <div class="links">
+    <a href="https://github.com/Dev-Luke-A/bonk">GitHub Repo</a>
     <a href="#">Play Store (Coming Soon)</a>
   </div>  <script>
-    function bonk() {
-      const row = document.getElementById('friendsRow');
-      const cards = row.querySelectorAll('.friend-card');
-      const scrollLeft = row.scrollLeft;
-      const cardWidth = cards[0].offsetWidth + 16; // 16 = gap
-      const index = Math.round(scrollLeft / cardWidth);
-      const currentCard = cards[index];
+    const friendsRow = document.getElementById('friendsRow');
+    const totalProfiles = 10;
+    let currentIndex = 0;
 
-      cards.forEach(card => {
-        card.querySelector('.explosion').classList.remove('show');
-      });
+    function createCard(imgId) {
+      const card = document.createElement('div');
+      card.className = 'friend-card';
+      card.innerHTML = `<div class="explosion"></div><img src="https://i.pravatar.cc/80?img=${imgId}" alt="Friend" />`;
+      return card;
+    }
+
+    // Populate cards dynamically
+    for (let i = 1; i <= totalProfiles; i++) {
+      friendsRow.appendChild(createCard(i));
+    }
+
+    function bonk() {
+      const cards = friendsRow.querySelectorAll('.friend-card');
+      const centerIndex = Math.round(friendsRow.scrollLeft / (cards[0].offsetWidth + 16));
+      const currentCard = cards[centerIndex];
+
+      cards.forEach(card => card.querySelector('.explosion').classList.remove('show'));
 
       if (currentCard) {
         const explosion = currentCard.querySelector('.explosion');
@@ -141,10 +140,16 @@
       }
     }
 
-    // Auto scroll friends row
-    let scrollInterval = setInterval(() => {
-      const row = document.getElementById('friendsRow');
-      row.scrollBy({ left: 96, behavior: 'smooth' });
-    }, 2000);
+    function autoScroll() {
+      const cards = friendsRow.querySelectorAll('.friend-card');
+      const cardWidth = cards[0].offsetWidth + 16;
+      currentIndex++;
+      if (currentIndex >= cards.length) {
+        currentIndex = 0;
+      }
+      friendsRow.scrollTo({ left: currentIndex * cardWidth, behavior: 'smooth' });
+    }
+
+    setInterval(autoScroll, 2000);
   </script></body>
 </html>
