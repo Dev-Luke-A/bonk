@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bonk!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', cursive;
+      background: #4ec4f0;
+      color: #fff;
+      text-align: center;
+    }
+    header {
+      padding: 2rem;
+    }
+    .logo {
+      width: 150px;
+      image-rendering: pixelated;
+    }
+    h1 {
+      font-size: 2rem;
+      margin: 1rem 0 0.5rem;
+    }
+    p.tagline {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+    .bonk-button {
+      background: #ff4d4d;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 5px #c0392b;
+      transition: transform 0.1s;
+    }
+    .bonk-button:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px #c0392b;
+    }
+    .hammer {
+      width: 80px;
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-45deg);
+      transition: top 0.3s ease;
+    }
+    .bonk-action {
+      position: relative;
+      height: 200px;
+      margin-bottom: 2rem;
+    }
+    .links a {
+      display: inline-block;
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      color: #333;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <img src="bonk-logo.png" alt="Bonk!" class="logo" />
+    <h1>Bonk!</h1>
+    <p class="tagline">Best way to annoy your friends.</p>
+  </header>  <div class="bonk-action">
+    <img src="bonk-logo.png" class="hammer" id="hammer" alt="Hammer" />
+    <button class="bonk-button" onclick="bonk()">Bonk!</button>
+  </div>  <div class="links">
+    <a href="#">GitHub Repo</a>
+    <a href="#">Play Store (Coming Soon)</a>
+  </div>  <script>
+    function bonk() {
+      const hammer = document.getElementById('hammer');
+      hammer.style.top = '50px';
+      setTimeout(() => {
+        hammer.style.top = '-200px';
+      }, 300);
+    }
+  </script></body>
+</html>
