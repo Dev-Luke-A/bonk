@@ -10,6 +10,7 @@
       background: #4ec4f0;
       color: #fff;
       text-align: center;
+      overflow-x: hidden;
     }
     header {
       padding: 2rem;
@@ -41,18 +42,48 @@
       transform: translateY(4px);
       box-shadow: 0 2px #c0392b;
     }
-    .hammer {
-      width: 80px;
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%) rotate(-45deg);
-      transition: top 0.3s ease;
-    }
     .bonk-action {
       position: relative;
       height: 200px;
       margin-bottom: 2rem;
+    }
+    .friends-row {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 1rem;
+      margin: 2rem auto;
+      max-width: 90vw;
+      scroll-behavior: smooth;
+    }
+    .friend-card {
+      position: relative;
+      flex: 0 0 auto;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid #ff4d4d;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .friend-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .explosion {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('bonk-logo.png') center/cover no-repeat;
+      display: none;
+      z-index: 2;
+    }
+    .show {
+      display: block !important;
     }
     .links a {
       display: inline-block;
@@ -72,18 +103,36 @@
     <h1>Bonk!</h1>
     <p class="tagline">Best way to annoy your friends.</p>
   </header>  <div class="bonk-action">
-    <img src="bonk-logo.png" class="hammer" id="hammer" alt="Hammer" />
     <button class="bonk-button" onclick="bonk()">Bonk!</button>
+  </div>  <div class="friends-row" id="friendsRow">
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=1" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=2" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=3" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=4" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=5" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=6" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=7" alt="Friend" /></div>
   </div>  <div class="links">
     <a href="#">GitHub Repo</a>
     <a href="#">Play Store (Coming Soon)</a>
   </div>  <script>
     function bonk() {
-      const hammer = document.getElementById('hammer');
-      hammer.style.top = '50px';
-      setTimeout(() => {
-        hammer.style.top = '-200px';
-      }, 300);
+      const row = document.getElementById('friendsRow');
+      const cards = row.querySelectorAll('.friend-card');
+      const scrollLeft = row.scrollLeft;
+      const cardWidth = cards[0].offsetWidth + 16; // 16 = gap
+      const index = Math.round(scrollLeft / cardWidth);
+      const currentCard = cards[index];
+
+      cards.forEach(card => {
+        card.querySelector('.explosion').classList.remove('show');
+      });
+
+      if (currentCard) {
+        const explosion = currentCard.querySelector('.explosion');
+        explosion.classList.add('show');
+        setTimeout(() => explosion.classList.remove('show'), 600);
+      }
     }
   </script></body>
 </html>
