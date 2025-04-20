@@ -55,6 +55,7 @@
       margin: 2rem auto;
       max-width: 90vw;
       scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
     }
     .friend-card {
       position: relative;
@@ -66,6 +67,7 @@
       border: 4px solid #ff4d4d;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      scroll-snap-align: center;
     }
     .friend-card img {
       width: 100%;
@@ -105,6 +107,7 @@
   </header>  <div class="bonk-action">
     <button class="bonk-button" onclick="bonk()">Bonk!</button>
   </div>  <div class="friends-row" id="friendsRow">
+    <!-- Multiple friend cards -->
     <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=1" alt="Friend" /></div>
     <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=2" alt="Friend" /></div>
     <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=3" alt="Friend" /></div>
@@ -112,6 +115,9 @@
     <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=5" alt="Friend" /></div>
     <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=6" alt="Friend" /></div>
     <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=7" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=8" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=9" alt="Friend" /></div>
+    <div class="friend-card"><div class="explosion"></div><img src="https://i.pravatar.cc/80?img=10" alt="Friend" /></div>
   </div>  <div class="links">
     <a href="#">GitHub Repo</a>
     <a href="#">Play Store (Coming Soon)</a>
@@ -134,5 +140,11 @@
         setTimeout(() => explosion.classList.remove('show'), 600);
       }
     }
+
+    // Auto scroll friends row
+    let scrollInterval = setInterval(() => {
+      const row = document.getElementById('friendsRow');
+      row.scrollBy({ left: 96, behavior: 'smooth' });
+    }, 2000);
   </script></body>
 </html>
