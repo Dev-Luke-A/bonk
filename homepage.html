@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -109,107 +110,129 @@
     <img src="bonk-logo.png" alt="Bonk!" class="logo" />
     <h1>Bonk!</h1>
     <p class="tagline">Best way to annoy your friends.</p>
-  </header>  <div class="bonk-action">
+  </header>
+  <div class="bonk-action">
     <button class="bonk-button" onclick="bonk()">Bonk!</button>
-  </div>  <div class="friends-row" id="friendsRow"></div>  <div class="links">
-    <a href="https://github.com/Dev-Luke-A/bonk">GitHub Repo</a>
+  </div>
+  <div class="friends-row" id="friendsRow"></div>
+  <div class="links">
+    <a href="#">GitHub Repo</a>
     <a href="#">Play Store (Coming Soon)</a>
-  </div>  <script>
-  const friendsRow = document.getElementById('friendsRow');
-  const totalProfiles = 10;
-  const cardWidth = 96; // 80px card + 16px gap
-  let currentIndex = totalProfiles;
+  </div>
+  <script>
+    const friendsRow = document.getElementById('friendsRow');
+    const totalProfiles = 10;
+    const cardWidth = 96; // width + gap (80 + 16)
+    let currentIndex = 0;
+    let autoScrollInterval;
+    let isScrolling = false;
+    let scrollTimeout;
 
-  function createCard(imgId) {
-    const card = document.createElement('div');
-    card.className = 'friend-card';
-    card.innerHTML = `<div class="explosion"></div><img src="https://i.pravatar.cc/80?img=${imgId}" alt="Friend" />`;
-    return card;
-  }
-
-  function cloneCards() {
-    const profiles = [];
-    for (let i = 1; i <= totalProfiles; i++) {
-      profiles.push(createCard(i));
+    function createCard(imgId) {
+      const card = document.createElement('div');
+      card.className = 'friend-card';
+      card.dataset.id = imgId;
+      card.innerHTML = `<div class="explosion"></div><img src="https://i.pravatar.cc/80?img=${imgId}" alt="Friend" />`;
+      return card;
     }
 
-    const clonesBefore = profiles.map(card => card.cloneNode(true));
-    const clonesAfter = profiles.map(card => card.cloneNode(true));
-
-    clonesBefore.forEach(card => friendsRow.appendChild(card));
-    profiles.forEach(card => friendsRow.appendChild(card));
-    clonesAfter.forEach(card => friendsRow.appendChild(card));
-  }
-
-  cloneCards();
-  friendsRow.scrollLeft = currentIndex * cardWidth;
-
-  function getCenterIndex() {
-    const scrollLeft = friendsRow.scrollLeft;
-    const center = scrollLeft + friendsRow.offsetWidth / 2;
-    return Math.round((center - cardWidth / 2) / cardWidth);
-  }
-
-  function highlightCenter() {
-    const cards = friendsRow.querySelectorAll('.friend-card');
-    cards.forEach(card => card.classList.remove('center'));
-    const centerIndex = getCenterIndex();
-    if (cards[centerIndex]) {
-      cards[centerIndex].classList.add('center');
+    function initializeCards() {
+      // Clear any existing cards
+      friendsRow.innerHTML = '';
+      
+      // Create and append cards (3 sets for seamless infinite scroll)
+      for (let set = 0; set < 3; set++) {
+        for (let i = 1; i <= totalProfiles; i++) {
+          friendsRow.appendChild(createCard(i));
+        }
+      }
+      
+      // Set initial scroll position to middle set
+      currentIndex = totalProfiles;
+      friendsRow.scrollLeft = currentIndex * cardWidth;
     }
-  }
 
-  function bonk() {
-    const cards = friendsRow.querySelectorAll('.friend-card');
-    const centerIndex = getCenterIndex();
-    const currentCard = cards[centerIndex];
-
-    cards.forEach(card => card.querySelector('.explosion').classList.remove('show'));
-
-    if (currentCard) {
-      const explosion = currentCard.querySelector('.explosion');
-      explosion.classList.add('show');
-      setTimeout(() => explosion.classList.remove('show'), 600);
+    function getCenterCardIndex() {
+      const scrollLeft = friendsRow.scrollLeft;
+      const visibleWidth = friendsRow.offsetWidth;
+      return Math.round((scrollLeft + visibleWidth / 2) / cardWidth);
     }
-  }
 
-  function scrollToCenter(index) {
-    friendsRow.scrollTo({
-      left: index * cardWidth,
-      behavior: 'smooth'
-    });
-  }
-
-  function autoScroll() {
-    currentIndex++;
-    scrollToCenter(currentIndex);
-
-    const cards = friendsRow.querySelectorAll('.friend-card');
-    if (currentIndex >= cards.length - totalProfiles) {
-      setTimeout(() => {
-        currentIndex = totalProfiles;
-        friendsRow.scrollLeft = currentIndex * cardWidth;
-      }, 500);
+    function highlightCenter() {
+      const centerIndex = getCenterCardIndex();
+      const cards = friendsRow.querySelectorAll('.friend-card');
+      const realIndex = centerIndex % totalProfiles;
+      
+      cards.forEach((card, index) => {
+        if (index === centerIndex) {
+          card.classList.add('center');
+        } else {
+          card.classList.remove('center');
+        }
+      });
+      
+      // Update currentIndex to the center card
+      currentIndex = centerIndex;
     }
-  }
 
-  // Debounce helper
-  let scrollTimeout;
-  friendsRow.addEventListener('scroll', () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      const newIndex = getCenterIndex();
-      scrollToCenter(newIndex);
-      currentIndex = newIndex;
-    }, 150);
+    function bonk() {
+      const centerIndex = getCenterCardIndex();
+      const cards = friendsRow.querySelectorAll('.friend-card');
+      
+      cards.forEach(card => card.querySelector('.explosion').classList.remove('show'));
+      
+      if (cards[centerIndex]) {
+        const explosion = cards[centerIndex].querySelector('.explosion');
+        explosion.classList.add('show');
+        setTimeout(() => explosion.classList.remove('show'), 600);
+      }
+    }
+
+    function autoScroll() {
+      if (isScrolling) return;
+      
+      isScrolling = true;
+      currentIndex++;
+      
+      friendsRow.scrollTo({
+        left: currentIndex * cardWidth,
+        behavior: 'smooth'
+      });
+      
+      // Check if we're approaching the end and need to wrap
+      const totalCards = friendsRow.querySelectorAll('.friend-card').length;
+      if (currentIndex >= totalCards - totalProfiles * 2) {
+        // Jump to the middle set without animation
+        setTimeout(() => {
+          currentIndex = totalProfiles;
+          friendsRow.scrollLeft = currentIndex * cardWidth;
+          isScrolling = false;
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          isScrolling = false;
+        }, 500);
+      }
+      
+      highlightCenter();
+    }
+
+    function handleScroll() {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        highlightCenter();
+        
+        // Reset auto-scroll timer on user interaction
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = setInterval(autoScroll, 2000);
+      }, 100);
+    }
+
+    // Initialize the app
+    initializeCards();
+    autoScrollInterval = setInterval(autoScroll, 2000);
+    friendsRow.addEventListener('scroll', handleScroll);
     highlightCenter();
-  });
-
-  setInterval(() => {
-    autoScroll();
-    highlightCenter();
-  }, 2500);
-
-  highlightCenter();
-      </script></body>
+  </script>
+</body>
 </html>
