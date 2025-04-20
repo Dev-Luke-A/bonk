@@ -125,7 +125,7 @@
     const cardWidth = 96; // width + gap (80 + 16)
     let autoScrollInterval;
     let scrollTimeout;
-    let isAutoScrolling = false;
+    let userScrolling = false; // debounce
 
     function createCard(imgId) {
       const card = document.createElement('div');
@@ -137,25 +137,21 @@
 
     function initializeCards() {
       friendsRow.innerHTML = '';
-      // 3 sets for infinite scroll
       for (let set = 0; set < 3; set++) {
         for (let i = 1; i <= totalProfiles; i++) {
           friendsRow.appendChild(createCard(i));
         }
       }
-      // Set initial scroll position to the middle set
+      // Set initial scroll position to middle set
       setTimeout(() => {
         friendsRow.scrollLeft = totalProfiles * cardWidth;
         highlightCenter();
       }, 0);
     }
 
-    // Get index of card currently centered in viewport
     function getCenterCardIndex() {
       const scrollLeft = friendsRow.scrollLeft;
-      // The point in the center of the visible area:
       const centerPoint = scrollLeft + friendsRow.offsetWidth / 2;
-      // Find which card's left edge is closest to that center
       const cards = Array.from(friendsRow.querySelectorAll('.friend-card'));
       let minDiff = Infinity, minIdx = 0;
       cards.forEach((card, idx) => {
@@ -189,60 +185,64 @@
       card.querySelector('.explosion').classList.add('show');
       setTimeout(() => {
         card.querySelector('.explosion').classList.remove('show');
+        highlightCenter();
       }, 600);
     }
 
+    // The core LOOPER
     function jumpIfNeeded() {
-      // If user scrolled near start or end "virtual set", jump to match in the middle set
-      const cards = friendsRow.querySelectorAll('.friend-card');
-      const totalCards = cards.length;
+      // This routine is called during/after any scroll (auto or user)
       const singleSetLen = totalProfiles;
       const scrollLeft = friendsRow.scrollLeft;
-      // Current index is (rounded) card under left edge
-      let rawIdx = Math.round(scrollLeft / cardWidth);
-
+      const totalWidth = singleSetLen * cardWidth;
+      // Closest card index
+      const rawIdx = Math.round(scrollLeft / cardWidth);
+      // If we've scrolled into the first set
       if (rawIdx < singleSetLen) {
-        // Jump forward by one set (without animation)
-        friendsRow.scrollLeft += singleSetLen * cardWidth;
+        // Mirror to middle set, same card
+        friendsRow.scrollLeft = scrollLeft + totalWidth;
       } else if (rawIdx >= singleSetLen * 2) {
-        // Jump backward by one set
-        friendsRow.scrollLeft -= singleSetLen * cardWidth;
+        // Mirror to middle set
+        friendsRow.scrollLeft = scrollLeft - totalWidth;
       }
     }
 
-    function autoScroll() {
-      if (isAutoScrolling) return;
-      isAutoScrolling = true;
-      // Always scroll one card to the right of the visible center
-      const target = friendsRow.scrollLeft + cardWidth;
-      friendsRow.scrollTo({ left: target, behavior: "smooth" });
-      setTimeout(() => {
-        jumpIfNeeded();
-        highlightCenter();
-        isAutoScrolling = false;
-      }, 400);
-    }
-
     function handleScroll() {
-      clearTimeout(scrollTimeout);
-      // Fix infinite scroll loop if user manually scrolls
+      // Always jump first!
       jumpIfNeeded();
+
+      clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         highlightCenter();
         clearInterval(autoScrollInterval);
         autoScrollInterval = setInterval(autoScroll, 2000);
-      }, 100);
+      }, 80);
+    }
+
+    function autoScroll() {
+      // Always ensure position is in the middle set
+      jumpIfNeeded();
+
+      // Scroll one card to right
+      const newLeft = friendsRow.scrollLeft + cardWidth;
+
+      // Prevent bounce: don't scroll into third set,
+      // rely on jumpIfNeeded to mirror back to center zone
+      friendsRow.scrollTo({ left: newLeft, behavior: "smooth" });
+      setTimeout(() => {
+        jumpIfNeeded();
+        highlightCenter();
+      }, 500); // match the scroll-behavior: smooth time
     }
 
     // Init!
     initializeCards();
-    // With a little delay to ensure DOM is ready
     setTimeout(highlightCenter, 50);
+
     autoScrollInterval = setInterval(autoScroll, 2000);
     friendsRow.addEventListener('scroll', handleScroll);
-
-    // Make sure snap is correct on resize
     window.addEventListener('resize', highlightCenter);
+
   </script>
 </body>
 </html>
