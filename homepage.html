@@ -115,82 +115,101 @@
     <a href="https://github.com/Dev-Luke-A/bonk">GitHub Repo</a>
     <a href="#">Play Store (Coming Soon)</a>
   </div>  <script>
-    const friendsRow = document.getElementById('friendsRow');
-    const totalProfiles = 10;
-    const cardWidth = 96; // width + gap (80 + 16)
-    let currentIndex = totalProfiles; // Start at first real item after clones
+  const friendsRow = document.getElementById('friendsRow');
+  const totalProfiles = 10;
+  const cardWidth = 96; // 80px card + 16px gap
+  let currentIndex = totalProfiles;
 
-    function createCard(imgId) {
-      const card = document.createElement('div');
-      card.className = 'friend-card';
-      card.innerHTML = `<div class="explosion"></div><img src="https://i.pravatar.cc/80?img=${imgId}" alt="Friend" />`;
-      return card;
+  function createCard(imgId) {
+    const card = document.createElement('div');
+    card.className = 'friend-card';
+    card.innerHTML = `<div class="explosion"></div><img src="https://i.pravatar.cc/80?img=${imgId}" alt="Friend" />`;
+    return card;
+  }
+
+  function cloneCards() {
+    const profiles = [];
+    for (let i = 1; i <= totalProfiles; i++) {
+      profiles.push(createCard(i));
     }
 
-    function cloneCards() {
-      const profiles = [];
-      for (let i = 1; i <= totalProfiles; i++) {
-        profiles.push(createCard(i));
-      }
+    const clonesBefore = profiles.map(card => card.cloneNode(true));
+    const clonesAfter = profiles.map(card => card.cloneNode(true));
 
-      const clonesBefore = profiles.map(card => card.cloneNode(true));
-      const clonesAfter = profiles.map(card => card.cloneNode(true));
+    clonesBefore.forEach(card => friendsRow.appendChild(card));
+    profiles.forEach(card => friendsRow.appendChild(card));
+    clonesAfter.forEach(card => friendsRow.appendChild(card));
+  }
 
-      clonesBefore.forEach(card => friendsRow.appendChild(card));
-      profiles.forEach(card => friendsRow.appendChild(card));
-      clonesAfter.forEach(card => friendsRow.appendChild(card));
+  cloneCards();
+  friendsRow.scrollLeft = currentIndex * cardWidth;
+
+  function getCenterIndex() {
+    const scrollLeft = friendsRow.scrollLeft;
+    const center = scrollLeft + friendsRow.offsetWidth / 2;
+    return Math.round((center - cardWidth / 2) / cardWidth);
+  }
+
+  function highlightCenter() {
+    const cards = friendsRow.querySelectorAll('.friend-card');
+    cards.forEach(card => card.classList.remove('center'));
+    const centerIndex = getCenterIndex();
+    if (cards[centerIndex]) {
+      cards[centerIndex].classList.add('center');
     }
+  }
 
-    cloneCards();
+  function bonk() {
+    const cards = friendsRow.querySelectorAll('.friend-card');
+    const centerIndex = getCenterIndex();
+    const currentCard = cards[centerIndex];
 
-    // Position to first real item
-    friendsRow.scrollLeft = totalProfiles * cardWidth;
+    cards.forEach(card => card.querySelector('.explosion').classList.remove('show'));
 
-    function highlightCenter() {
-      const cards = friendsRow.querySelectorAll('.friend-card');
-      const scrollLeft = friendsRow.scrollLeft;
-      const visibleWidth = friendsRow.offsetWidth;
-      const centerIndex = Math.floor((scrollLeft + visibleWidth / 2) / cardWidth);
-
-      cards.forEach(card => card.classList.remove('center'));
-      if (cards[centerIndex]) {
-        cards[centerIndex].classList.add('center');
-      }
+    if (currentCard) {
+      const explosion = currentCard.querySelector('.explosion');
+      explosion.classList.add('show');
+      setTimeout(() => explosion.classList.remove('show'), 600);
     }
+  }
 
-    function bonk() {
-      const cards = friendsRow.querySelectorAll('.friend-card');
-      const scrollLeft = friendsRow.scrollLeft;
-      const visibleWidth = friendsRow.offsetWidth;
-      const centerIndex = Math.floor((scrollLeft + visibleWidth / 2) / cardWidth);
-      const currentCard = cards[centerIndex];
+  function scrollToCenter(index) {
+    friendsRow.scrollTo({
+      left: index * cardWidth,
+      behavior: 'smooth'
+    });
+  }
 
-      cards.forEach(card => card.querySelector('.explosion').classList.remove('show'));
+  function autoScroll() {
+    currentIndex++;
+    scrollToCenter(currentIndex);
 
-      if (currentCard) {
-        const explosion = currentCard.querySelector('.explosion');
-        explosion.classList.add('show');
-        setTimeout(() => explosion.classList.remove('show'), 600);
-      }
+    const cards = friendsRow.querySelectorAll('.friend-card');
+    if (currentIndex >= cards.length - totalProfiles) {
+      setTimeout(() => {
+        currentIndex = totalProfiles;
+        friendsRow.scrollLeft = currentIndex * cardWidth;
+      }, 500);
     }
+  }
 
-    function autoScroll() {
-      const cards = friendsRow.querySelectorAll('.friend-card');
-      currentIndex++;
-      friendsRow.scrollTo({ left: currentIndex * cardWidth, behavior: 'smooth' });
-
-      if (currentIndex >= cards.length - totalProfiles) {
-        setTimeout(() => {
-          friendsRow.scrollLeft = totalProfiles * cardWidth;
-          currentIndex = totalProfiles;
-        }, 500);
-      }
-
-      highlightCenter();
-    }
-
-    setInterval(autoScroll, 2000);
-    friendsRow.addEventListener('scroll', highlightCenter);
+  // Debounce helper
+  let scrollTimeout;
+  friendsRow.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      const newIndex = getCenterIndex();
+      scrollToCenter(newIndex);
+      currentIndex = newIndex;
+    }, 150);
     highlightCenter();
-  </script></body>
+  });
+
+  setInterval(() => {
+    autoScroll();
+    highlightCenter();
+  }, 2500);
+
+  highlightCenter();
+      </script></body>
 </html>
