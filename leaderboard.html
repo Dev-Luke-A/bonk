@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+</head>
+<body>
+    <h1>Bonk Scores</h1>
+    <ul id="bonk-scores"></ul>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC0KdHUkmUvnJOD3PsW1TzJGMNGh7WGfmM",
+            authDomain: "bonk-323ed.firebaseapp.com",
+            projectId: "bonk-323ed",
+            storageBucket: "gs://bonk-323ed.firebasestorage.app",
+            messagingSenderId: "120568523989",
+            appId: "1:120568523989:android:253efa7395347086eb865c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchAndDisplayScores() {
+            const bonkScores = [];
+            const querySnapshot = await getDocs(collection(db, "public_users"));
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                if (user.bonkScore) {
+                    bonkScores.push({ name: user.name, bonkScore: user.bonkScore });
+                }
+            });
+
+            bonkScores.sort((a, b) => b.bonkScore - a.bonkScore);
+
+            const listElement = document.getElementById("bonk-scores");
+            bonkScores.forEach((user) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${user.name}: ${user.bonkScore}`;
+                listElement.appendChild(listItem);
+            });
+        }
+
+        fetchAndDisplayScores();
+    </script>
+</body>
+</html>
