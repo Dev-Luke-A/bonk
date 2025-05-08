@@ -15,16 +15,11 @@
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyC0KdHUkmUvnJOD3PsW1TzJGMNGh7WGfmM",
-            authDomain: "bonk-323ed.firebaseapp.com",
-            projectId: "bonk-323ed",
-            storageBucket: "gs://bonk-323ed.firebasestorage.app",
-            messagingSenderId: "120568523989",
-            appId: "1:120568523989:android:253efa7395347086eb865c"
+       
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+       // const app = initializeApp(firebaseConfig);
+       // const db = getFirestore(app);
 
         async function fetchAndDisplayScores() {
             const bonkScores = [];
@@ -46,7 +41,6 @@
             });
         }
 
-        fetchAndDisplayScores();
     </script>
 </body>
 </html>
