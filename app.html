@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bonk App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', cursive;
+      background: #4ec4f0;
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .logo {
+      width: 150px;
+      image-rendering: pixelated;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta {
+      background: #ff4d4d;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 5px #c0392b;
+      transition: transform 0.1s;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .cta:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px #c0392b;
+    }
+
+    .subtext {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+
+    .footer-links {
+      margin-top: 2rem;
+    }
+
+    .footer-links a {
+      display: inline-block;
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      color: #333;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <img src="/bonk-logo.png" alt="Bonk!" class="logo" />
+  <h1>You’ve been BONKED!</h1>
+  <p class="tagline">Open this in the Bonk app to bonk back.</p>
+
+  <a class="cta" href="https://play.google.com/store/apps/details?id=com.game.bonk&pcampaignid=web_share">Get the App</a>
+
+  <p class="subtext">(Don’t have the app? Grab it on Google Play)</p>
+
+  <div class="footer-links">
+    <a href="/">Back to Home</a>
+    <a href="https://github.com/dev-luke-a/bonk">GitHub</a>
+  </div>
+</body>
+</html>
