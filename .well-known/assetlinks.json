@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.game.bonk",
+      "sha256_cert_fingerprints": [
+        "21:3d:c1:61:cf:9e:46:1e:ab:bf:28:77:ca:a3:41:e6:48:9c:7b:e2:d2:cd:55:2c:6c:da:b1:b2:b2:75:bc:e9"
+      ]
+    }
+  }
+]
