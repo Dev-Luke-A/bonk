@@ -4,9 +4,8 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.game.bonk",
-      "sha256_cert_fingerprints": [
-        "FD:CC:39:9C:00:33:F5:3F:3E:BD:53:84:23:3D:E1:B5:6E:A2:6B:BD:A9:FA:4A:1D:C9:C1:A8:Cd:66:96:BD:79"
-      ]
+      "sha256_cert_fingerprints":
+        ["FD:CC:39:9C:00:33:F5:3F:3E:BD:53:84:23:3D:E1:B5:6E:A2:6B:BD:A9:FA:4A:1D:C9:C1:A8:CD:66:96:BD:79"]
     }
   }
 ]
